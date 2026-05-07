@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kroson AI - Start</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Using FontAwesome for the cart icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="kronos-core.css">
+    <style>
+        :root {
+            --text-dark: #111111;
+            --text-gray: #666666;
+            --primary-blue: #3b82f6;
+            --bg-light: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 60px;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text-dark);
+        }
+
+        .nav-links {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-dark);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+
+        .nav-actions {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .btn-signin {
+            background-color: var(--text-dark);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 26px 12px 22px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-signin .login-icon {
+            display: flex;
+            align-items: center;
+            opacity: 0.85;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .btn-signin:hover {
+            background-color: #2a2a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+        }
+
+        .btn-signin:hover .login-icon {
+            transform: translateX(2px);
+            opacity: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            margin-top: -50px;
+            /* Slight offset to center visually */
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f0f4ff;
+            color: var(--primary-blue);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            border: 1px solid #e0e8ff;
+        }
+
+        h1 {
+            font-size: 84px;
+            font-weight: 800;
+            letter-spacing: -3px;
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        p.subtitle {
+            font-size: 18px;
+            color: var(--text-gray);
+            max-width: 650px;
+            line-height: 1.6;
+            margin-bottom: 45px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-explore {
+            background-color: var(--text-dark);
+            color: #ffffff;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 35px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-explore:hover {
+            background-color: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-view {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 30px;
+            padding: 16px 35px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view:hover {
+            background-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-view.disabled {
+            cursor: default;
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: none !important;
+            pointer-events: none;
+        }
+
+        /* Background Glow & Canvas */
+        .bg-glow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+            background: radial-gradient(circle at 70% 30%, #eef1ff 0%, #ffffff 60%);
+        }
+
+        .bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: #0044ff;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.25;
+            animation: pulse-glow 8s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.15;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.35;
+            }
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Animations --- */
+        body {
+            opacity: 0;
+            animation: pageFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.page-exit {
+            animation: pageFadeOut 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+        }
+
+        @keyframes pageFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-15px) scale(0.98);
+            }
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .fade-in-down {
+            opacity: 0;
+            animation: fadeInDown 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+
+        .profile-container.active .profile-chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-glow-container">
+        <div class="bg-glow"></div>
+    </div>
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fade-in-down">
+        <div class="logo">KRONOS</div>
+
+        <div class="nav-links">
+            <a href="start_page.html" class="active">Home</a>
+            <a href="apps.html">Apps</a>
+            <a href="about.html">About Us</a>
+        </div>
+
+        <div class="nav-actions" id="nav-auth-container">
+            <button class="btn-signin" onclick="window.location.href='auth.html'">
+                <span class="login-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
+                </span>
+                Sign In
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="hero">
+        <div class="badge fade-in-up delay-1">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            Enterprise AI Engineering
+        </div>
+
+        <h1 class="fade-in-up delay-2">Expand Your AI</h1>
+
+        <p class="subtitle fade-in-up delay-3">
+            Scale your potential with enterprise-grade AI technical tools and high-performance engineering systems
+            designed for
+            the modern digital architect.
+        </p>
+
+        <div class="hero-buttons fade-in-up delay-4">
+            <button class="btn-explore" onclick="window.location.href='apps.html'">View Studio Apps</button>
+        </div>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray = [];
+
+        const mouse = {
+            x: undefined,
+            y: undefined
+        }
+
+        window.addEventListener('mousemove', function (event) {
+            mouse.x = event.x;
+            mouse.y = event.y;
+            for (let i = 0; i < 3; i++) {
+                particlesArray.push(new Particle());
+            }
+        });
+
+        class Particle {
+            constructor() {
+                this.x = mouse.x;
+                this.y = mouse.y;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = `rgba(59, 130, 246, ${Math.random() * 0.6 + 0.2})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.1;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                if (particlesArray[i].size <= 0.2) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+    <script src="kronos-core.js"></script>
+</body>
+
+</html>

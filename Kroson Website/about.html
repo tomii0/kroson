@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team — KRONOS AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="kronos-core.css">
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --blue-glow: rgba(59, 130, 246, 0.4);
+            --text-dark: #111111;
+            --text-gray: #666666;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #ffffff;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Background Effects --- */
+        .glow-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #f0f7ff 0%, #ffffff 100%);
+        }
+
+        .floating-blur {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--primary-blue);
+            filter: blur(120px);
+            opacity: 0.1;
+            border-radius: 50%;
+            animation: float 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 80px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            flex: 1;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--text-dark);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--text-dark); }
+
+        .nav-actions { flex: 1; display: flex; justify-content: flex-end; }
+
+        /* --- Team Content --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 140px 20px 100px;
+            position: relative;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            animation: containerFade 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes containerFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 45px;
+            padding: 60px 45px;
+            text-align: center;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 50px 100px -20px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Animated Aura */
+        .aura {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, var(--blue-glow) 0%, transparent 70%);
+            z-index: -1;
+            opacity: 0.3;
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.2; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.4; }
+        }
+
+        /* Gradient Border */
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, transparent, var(--primary-blue), transparent, var(--primary-blue), transparent);
+            background-size: 200% 200%;
+            z-index: -1;
+            border-radius: 47px;
+            opacity: 0;
+            transition: 0.6s;
+            animation: borderFlow 5s linear infinite;
+        }
+
+        .profile-card:hover::before { opacity: 0.4; }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 200%; }
+        }
+
+        /* Icon Container */
+        .icon-box {
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 35px;
+            font-size: 40px;
+            color: var(--primary-blue);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.1);
+            position: relative;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .icon-box::after {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            background: var(--primary-blue);
+            filter: blur(35px);
+            opacity: 0.2;
+            border-radius: 50%;
+            z-index: -1;
+            animation: auraSpin 6s linear infinite;
+        }
+
+        @keyframes auraSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .profile-card:hover .icon-box {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
+        }
+
+        .label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .name {
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+            line-height: 1;
+        }
+
+        .role {
+            font-size: 16.5px;
+            font-weight: 600;
+            color: var(--text-gray);
+            margin-bottom: 25px;
+        }
+
+        .badge-glow {
+            display: inline-block;
+            background: #eef5ff;
+            color: var(--primary-blue);
+            padding: 8px 20px;
+            border-radius: 35px;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+            transition: 0.3s;
+        }
+
+        .profile-card:hover .badge-glow {
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.25);
+            background: #fff;
+        }
+
+        .bio {
+            font-size: 15.5px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 45px;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        .contact-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            padding-top: 35px;
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            transition: 0.3s;
+        }
+
+        .footer-item a { color: inherit; text-decoration: none; }
+        .footer-item:hover { color: var(--primary-blue); transform: translateY(-2px); }
+
+        /* Loader */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+        .loader-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            main { padding-top: 120px; }
+            .profile-card { max-width: 450px; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 25px 30px; }
+            .nav-links { display: none; }
+            .profile-card { padding: 50px 30px; border-radius: 35px; }
+            .name { font-size: 38px; }
+            .cards-container { gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-overlay">
+        <div style="width: 45px; height: 45px; border: 3px solid rgba(59, 130, 246, 0.08); border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+    <div class="glow-bg"></div>
+    <div class="floating-blur" style="top: 15%; left: 15%;"></div>
+    <div class="floating-blur" style="bottom: 15%; right: 15%; animation-delay: -7s;"></div>
+
+    <nav>
+        <a href="start_page.html" class="logo">KRONOS</a>
+        <div class="nav-links">
+            <a href="start_page.html">Home</a>
+            <a href="apps.html">Apps</a>
+            <a href="about.html" class="active">About Us</a>
+        </div>
+        <div class="nav-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <main>
+        <div class="cards-container">
+            <!-- Card 1: Anurag Rajawat -->
+            <div class="profile-card">
+                <div class="aura"></div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <span class="label">FOUNDER & VISIONARY</span>
+                <h1 class="name">Anurag Rajawat</h1>
+                <p class="role">AI Engineer & Creative Designer (Tomii)</p>
+                <div class="badge-glow">AI Systems Architect</div>
+                <p class="bio">
+                    Anurag is a futuristic AI engineer and creative designer focused on building modern AI-powered experiences, 
+                    digital products, branding systems, and innovative technology solutions. With a passion for precision and speed, 
+                    he leads KRONOS AI towards the next generation of intelligent tools.
+                </p>
+                <div class="contact-footer">
+                    <div class="footer-item"><span>📍</span> India</div>
+                    <div class="footer-item"><span>✉️</span> <a href="mailto:corebillionairee@gmail.com">corebillionairee@gmail.com</a></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Jony -->
+            <div class="profile-card">
+                <div class="aura"></div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <span class="label">OWNER & CREATOR</span>
+                <h1 class="name">Jony</h1>
+                <p class="role">AI Engineer & Developer</p>
+                <div class="badge-glow">AI Systems Architect</div>
+                <p class="bio">
+                    Jony is a passionate AI engineer and developer focused on building futuristic digital systems, automation tools, 
+                    AI-powered applications, and modern creative experiences. He specializes in developing innovative solutions 
+                    that combine performance, design, and next-generation technology.
+                </p>
+                <div class="contact-footer">
+                    <div class="footer-item"><span>📍</span> India</div>
+                    <div class="footer-item"><span>✉️</span> <a href="mailto:jj4872538@gmail.com">jj4872538@gmail.com</a></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="kronos-core.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loader-overlay').classList.add('hidden');
+            }, 600);
+        });
+    </script>
+</body>
+</html>

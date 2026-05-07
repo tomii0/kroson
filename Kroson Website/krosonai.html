@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KROSON — Professional AI Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #fff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100%;
+            color: #000;
+        }
+
+        /* Navbar */
+        nav {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 45px 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-right a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+        }
+
+        .nav-right a:hover {
+            color: #000;
+        }
+
+        /* Split Wrapper */
+        .wrapper {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Left Side */
+        .left-side {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 80px;
+            padding-right: 60px;
+            background: #fff;
+            position: relative;
+            z-index: 100;
+        }
+
+        .left-side h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 35px;
+            color: #1a1a1a;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
+        }
+
+        .left-side p {
+            color: #a0a0a0;
+            font-size: 14px;
+            line-height: 1.8;
+            max-width: 400px;
+            margin-bottom: 50px;
+            font-weight: 500;
+        }
+
+        .btn-start {
+            width: 120px;
+            height: 52px;
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            background: #000;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Right Side - Seamless Blend & Interactive Columns */
+        .right-side {
+            width: 50%;
+            height: 100%;
+            position: relative;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* Seamless Transition Mask */
+            -webkit-mask-image: linear-gradient(to right, transparent, black 25%);
+            mask-image: linear-gradient(to right, transparent, black 25%);
+        }
+
+        /* Electric Deep Blue Glow - Cloud Falloff */
+        .blue-gradient {
+            position: absolute;
+            inset: -20%;
+            background: radial-gradient(circle at 45% 50%, #2e5cff 0%, #4f6bff 25%, rgba(79, 107, 255, 0.4) 50%, transparent 85%);
+            filter: blur(100px);
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* Interactive Grid Columns */
+        .grid-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            padding: 0 5%;
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .grid-column {
+            flex: 1;
+            height: 100%;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            transition: 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+        }
+
+        .grid-column:last-child {
+            border-right: none;
+        }
+
+        /* Rectangle Hover Animation */
+        .grid-column:hover {
+            background: rgba(79, 107, 255, 0.1);
+            box-shadow: inset 0 0 80px rgba(79, 107, 255, 0.2);
+            backdrop-filter: brightness(1.1);
+        }
+
+        /* High-Intensity KRONOS Layer */
+        .floating-kronos {
+            position: relative;
+            font-size: 105px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 12px;
+            z-index: 10;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.5), 0 0 60px rgba(79, 107, 255, 0.3);
+            animation: float 8s infinite ease-in-out;
+            user-select: none;
+            opacity: 1;
+            text-transform: uppercase;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* Floating Info Labels */
+        .floating-label {
+            position: absolute;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            max-width: 140px;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0.9;
+            z-index: 11;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+
+        .label-top-right {
+            top: 30%;
+            right: 28%;
+        }
+
+        .label-mid-left {
+            bottom: 30%;
+            left: 22%;
+        }
+
+        .label-bottom-right {
+            bottom: 38%;
+            right: 4%;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">KRONOS</div>
+        <div class="nav-right">
+            <a href="about.html" style="transition: 0.3s; cursor: pointer;">about us</a>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="left-side">
+            <h1>WELCOME TO OUR<br>KROSON</h1>
+            <p>
+                We create powerful, futuristic, and professional<br>
+                AI solutions for your brand.<br><br>
+                AI development, branding, and creative solutions — everything you<br>
+                need to bring your digital ideas to life.
+            </p>
+            <button class="btn-start" onclick="window.location.href='start_page.html'">Start</button>
+        </div>
+
+        <!-- Right Side - Seamless Transition & Interactive Rectangles -->
+        <div class="right-side">
+            <div class="blue-gradient"></div>
+
+            <div class="grid-container">
+                <div class="grid-column"></div>
+                <div class="grid-column"></div>
+                <div class="grid-column"></div>
+                <div class="grid-column"></div>
+                <div class="grid-column"></div>
+            </div>
+
+            <div class="floating-kronos">GEN AI</div>
+
+            <div class="floating-label label-top-right">Experienced<br>engineers</div>
+            <div class="floating-label label-mid-left">Modern<br>equipment</div>
+            <div class="floating-label label-bottom-right">Individual approach<br>to each client</div>
+        </div>
+    </div>
+
+</body>
+
+</html>

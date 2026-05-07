@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up — KRONOS AI</title>
+    <meta name="description" content="Sign in or create your KRONOS AI account to access courses and studio apps.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --bg-card: #ffffff;
+            --text-dark: #111111;
+            --text-gray: #6b7280;
+            --text-light: #9ca3af;
+            --blue: #6384ff;
+            --blue-dark: #4a6aff;
+            --blue-soft: #eef1ff;
+            --red: #ef4444;
+            --green: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: transparent;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Allow vertical scrolling for long forms */
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            opacity: 0;
+            animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            position: relative;
+        }
+
+        /* Centered scrollable wrapper */
+        .auth-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 100px 20px 60px;
+            /* Top padding clears fixed logo-bar */
+            box-sizing: border-box;
+        }
+
+        /* ── KRONOS GLOW BACKGROUND ── */
+        .glow-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .glow-orb {
+            position: absolute;
+            top: 50%;
+            left: 70%;
+            transform: translate(-50%, -50%);
+            width: 750px;
+            height: 750px;
+            background: radial-gradient(circle, #5a85ff 0%, #4a75ff 45%, transparent 75%);
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.18;
+            animation: glowFloat 10s ease-in-out infinite alternate;
+        }
+
+        .glow-orb-2 {
+            position: absolute;
+            top: 75%;
+            left: 20%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, #7ba0ff 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: glowFloat 14s ease-in-out 3s infinite alternate-reverse;
+        }
+
+        @keyframes glowFloat {
+            0% {
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0.14;
+            }
+
+            100% {
+                transform: translate(-48%, -52%) scale(1.08);
+                opacity: 0.24;
+            }
+        }
+
+        .vlines {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .vline {
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(99, 132, 255, 0.08) 30%,
+                    rgba(99, 132, 255, 0.15) 50%,
+                    rgba(99, 132, 255, 0.08) 70%,
+                    transparent 100%);
+            animation: vlinePulse 9s ease-in-out infinite alternate;
+        }
+
+        .vline:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .vline:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        .vline:nth-child(4) {
+            animation-delay: 0.5s;
+        }
+
+        .vline:nth-child(5) {
+            animation-delay: 1.5s;
+        }
+
+        .vline:nth-child(6) {
+            animation-delay: 2.5s;
+        }
+
+        @keyframes vlinePulse {
+            0% {
+                opacity: 0.35;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .light-sweep {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(105deg,
+                    transparent 40%,
+                    rgba(99, 132, 255, 0.035) 50%,
+                    transparent 60%);
+            animation: sweep 14s linear infinite;
+        }
+
+        @keyframes sweep {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(290%);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.page-exit {
+            animation: fadeOut 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.98);
+            }
+        }
+
+        /* ── LOGO ── */
+        .logo-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 22px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            background: rgba(244, 246, 251, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 1.5px;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .back-link {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.25s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-dark);
+        }
+
+        /* ── CARD ── */
+        .auth-card {
+            position: relative;
+            z-index: 1;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 26px;
+            padding: 48px 44px 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(99, 132, 255, 0.08);
+        }
+
+        /* ── TABS ── */
+        .tab-group {
+            display: flex;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 36px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-radius: 9px;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-card);
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ── FORM HEADER ── */
+        .form-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-sub {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        /* ── FORM ── */
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 7px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            background: var(--bg);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 13px 16px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(99, 132, 255, 0.12);
+        }
+
+        input.error {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        input.success {
+            border-color: var(--green);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: var(--red);
+            margin-top: 5px;
+            display: none;
+        }
+
+        .input-hint.show {
+            display: block;
+        }
+
+        /* Password toggle */
+        .input-wrap {
+            position: relative;
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-light);
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-pw:hover {
+            color: var(--text-gray);
+        }
+
+        /* Remember / Forgot */
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            margin-top: -4px;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-gray);
+            cursor: pointer;
+        }
+
+        .remember-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--blue);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--blue-dark);
+        }
+
+        /* ── SUBMIT BUTTON ── */
+        .btn-submit {
+            width: 100%;
+            background: var(--text-dark);
+            color: #fff;
+            border: none;
+            border-radius: 40px;
+            padding: 15px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-bottom: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            background: #2a2a2a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-submit.loading .btn-text {
+            display: none;
+        }
+
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        /* ── DIVIDER ── */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        /* ── GOOGLE BTN ── */
+        .btn-google {
+            width: 100%;
+            background: var(--bg-card);
+            color: var(--text-dark);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 40px;
+            padding: 13px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-google:hover {
+            background: var(--bg);
+            border-color: rgba(0, 0, 0, 0.18);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .google-icon {
+            font-size: 18px;
+        }
+
+        /* ── SWITCH TEXT ── */
+        .switch-text {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-top: 24px;
+        }
+
+        .switch-text a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .switch-text a:hover {
+            color: var(--blue-dark);
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--text-dark);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success {
+            background: #16a34a;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        /* ── TERMS NOTE ── */
+        .terms-note {
+            font-size: 11.5px;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+
+        .terms-note a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        @media (max-width: 500px) {
+            .logo-bar {
+                padding: 18px 20px;
+            }
+
+            .auth-wrapper {
+                padding-top: 90px;
+                padding-bottom: 40px;
+            }
+
+            .auth-card {
+                padding: 32px 24px 28px;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- GLOW BACKGROUND -->
+    <div class="glow-bg" aria-hidden="true">
+        <div class="glow-orb"></div>
+        <div class="glow-orb-2"></div>
+        <div class="vlines">
+            <div class="vline"></div>
+            <div class="vline"></div>
+            <div class="vline"></div>
+            <div class="vline"></div>
+            <div class="vline"></div>
+            <div class="vline"></div>
+        </div>
+        <div class="light-sweep"></div>
+    </div>
+
+    <!-- LOGO BAR -->
+    <header class="logo-bar">
+        <a href="krosonai.html" class="logo">KRONOS</a>
+        <a href="start_page.html" class="back-link">← Back to Home</a>
+    </header>
+
+    <!-- AUTH WRAPPER (Scroll-safe container) -->
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            <!-- TAB TOGGLE -->
+            <div class="tab-group">
+                <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Log In</button>
+                <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- ── LOGIN FORM ── -->
+            <div class="form-panel active" id="panel-login">
+                <div class="form-title">Welcome back</div>
+                <div class="form-sub">Sign in to your KRONOS account</div>
+
+                <form id="login-form" onsubmit="handleLogin(event)" novalidate>
+                    <div class="form-group">
+                        <label for="login-email">Email address</label>
+                        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+                        <div class="input-hint" id="login-email-err">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-wrap">
+                            <input type="password" id="login-password" placeholder="Your password"
+                                autocomplete="current-password">
+                            <button type="button" class="toggle-pw"
+                                onclick="togglePw('login-password', this)">👁️</button>
+                        </div>
+                        <div class="input-hint" id="login-password-err">Password is required.</div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="remember-label">
+                            <input type="checkbox" id="remember-me"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-login">
+                        <span class="btn-text">Log In</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <div class="or-divider">or continue with</div>
+
+                <div id="google-btn-login" style="display: flex; justify-content: center;"></div>
+
+                <div class="switch-text">
+                    Don't have an account? <a onclick="switchTab('signup')">Sign up free</a>
+                </div>
+            </div>
+
+            <!-- ── SIGN UP FORM ── -->
+            <div class="form-panel" id="panel-signup">
+                <div class="form-title">Create account</div>
+                <div class="form-sub">Join KRONOS AI — it's free to start</div>
+
+                <form id="signup-form" onsubmit="handleSignup(event)" novalidate>
+                    <div class="form-group">
+                        <label for="signup-name">Full name</label>
+                        <input type="text" id="signup-name" placeholder="Your full name" autocomplete="name">
+                        <div class="input-hint" id="signup-name-err">Please enter your name.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-email">Email address</label>
+                        <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email">
+                        <div class="input-hint" id="signup-email-err">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div class="input-wrap">
+                            <input type="password" id="signup-password" placeholder="Min. 8 characters"
+                                autocomplete="new-password">
+                            <button type="button" class="toggle-pw"
+                                onclick="togglePw('signup-password', this)">👁️</button>
+                        </div>
+                        <div class="input-hint" id="signup-password-err">Password must be at least 8 characters.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm password</label>
+                        <div class="input-wrap">
+                            <input type="password" id="signup-confirm" placeholder="Re-enter password"
+                                autocomplete="new-password">
+                            <button type="button" class="toggle-pw"
+                                onclick="togglePw('signup-confirm', this)">👁️</button>
+                        </div>
+                        <div class="input-hint" id="signup-confirm-err">Passwords do not match.</div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="btn-signup">
+                        <span class="btn-text">Create Account</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <div class="or-divider">or continue with</div>
+
+                <div id="google-btn-signup" style="display: flex; justify-content: center;"></div>
+
+                <div class="terms-note">
+                    By signing up you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                </div>
+
+                <div class="switch-text">
+                    Already have an account? <a onclick="switchTab('login')">Log in</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ── KRONOS NEW AUTH ENGINE ── */
+        const DB_KEY = 'KRONOS_USER_DB';
+        const SES_KEY = 'KRONOS_SESSION';
+        const PROVIDERS = { MANUAL: 'MANUAL', GOOGLE: 'GOOGLE' };
+
+        const params = new URLSearchParams(window.location.search);
+
+        const KRONOS_AUTH = {
+            getUsers: () => JSON.parse(localStorage.getItem(DB_KEY) || '[]'),
+            saveUsers: (users) => localStorage.setItem(DB_KEY, JSON.stringify(users)),
+
+            createSession: (user, remember = false) => {
+                const sessionData = {
+                    username: user.username,
+                    email: user.email,
+                    provider: user.provider,
+                    picture: user.picture || null,
+                    registerDate: user.registerDate,
+                    loginTime: new Date().toISOString(),
+                    status: 'VERIFIED'
+                };
+                const storage = remember ? localStorage : sessionStorage;
+                storage.setItem(SES_KEY, JSON.stringify(sessionData));
+                localStorage.setItem('kronosUser', JSON.stringify(sessionData));
+            },
+
+            getSession: () => JSON.parse(localStorage.getItem(SES_KEY) || sessionStorage.getItem(SES_KEY) || 'null'),
+
+            encrypt: (pw) => btoa("KRONOS_V3_" + pw).split('').reverse().join(''),
+
+            getSecurityMeta: () => {
+                const ua = navigator.userAgent;
+                // Device type
+                const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua);
+                const isTablet = /iPad|Tablet/i.test(ua) && !/Mobile/i.test(ua);
+                const deviceType = isTablet ? 'Tablet' : (isMobile ? 'Mobile' : 'Desktop');
+
+                // Browser
+                let browser = 'Unknown';
+                if (/Edg\//.test(ua)) browser = 'Edge';
+                else if (/OPR\/|Opera/.test(ua)) browser = 'Opera';
+                else if (/Chrome\//.test(ua) && !/Chromium/.test(ua)) browser = 'Chrome';
+                else if (/Firefox\//.test(ua)) browser = 'Firefox';
+                else if (/Safari\//.test(ua) && !/Chrome/.test(ua)) browser = 'Safari';
+                else if (/Trident\/|MSIE/.test(ua)) browser = 'IE';
+
+                // OS
+                let os = 'Unknown';
+                if (/Windows/.test(ua)) os = 'Windows';
+                else if (/Mac OS X/.test(ua) && !/iPhone|iPad/.test(ua)) os = 'macOS';
+                else if (/iPhone/.test(ua)) os = 'iOS';
+                else if (/iPad/.test(ua)) os = 'iPadOS';
+                else if (/Android/.test(ua)) os = 'Android';
+                else if (/Linux/.test(ua)) os = 'Linux';
+
+                const now = new Date();
+                return {
+                    deviceType,
+                    browser,
+                    os,
+                    screenRes: `${screen.width}x${screen.height}`,
+                    language: navigator.language || 'N/A',
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'N/A',
+                    regDate: now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+                    regTime: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+                };
+            },
+
+            logSecurityEvent: (email, meta) => {
+                const log = JSON.parse(localStorage.getItem('KRONOS_SECURITY_LOG') || '[]');
+                log.push({ email, ...meta, ts: Date.now() });
+                // Keep last 200 events
+                if (log.length > 200) log.splice(0, log.length - 200);
+                localStorage.setItem('KRONOS_SECURITY_LOG', JSON.stringify(log));
+            },
+
+            isSuspicious: (email, meta) => {
+                const log = JSON.parse(localStorage.getItem('KRONOS_SECURITY_LOG') || '[]');
+                const recent = log.filter(e => Date.now() - e.ts < 10 * 60 * 1000); // last 10 min
+                // Flag if same browser+device combo registered 2+ accounts in 10 min
+                const sameDevice = recent.filter(e => e.browser === meta.browser && e.deviceType === meta.deviceType && e.email !== email);
+                return sameDevice.length >= 2;
+            }
+        };
+
+        window.onload = function () {
+            const clientID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+            try {
+                google.accounts.id.initialize({
+                    client_id: clientID,
+                    callback: handleGoogleResponse,
+                    auto_select: false
+                });
+                const btnCfg = { theme: "outline", size: "large", shape: "pill", width: 350 };
+                google.accounts.id.renderButton(document.getElementById("google-btn-login"), btnCfg);
+                google.accounts.id.renderButton(document.getElementById("google-btn-signup"), btnCfg);
+            } catch (err) { }
+        };
+
+        function handleGoogleResponse(response) {
+            try {
+                const payload = parseJwt(response.credential);
+                const users = KRONOS_AUTH.getUsers();
+                let user = users.find(u => u.email.toLowerCase() === payload.email.toLowerCase());
+                if (!user) {
+                    const meta = KRONOS_AUTH.getSecurityMeta();
+                    user = {
+                        username: payload.name,
+                        email: payload.email.toLowerCase(),
+                        password: null,
+                        provider: PROVIDERS.GOOGLE,
+                        picture: payload.picture,
+                        registerDate: new Date().toISOString(),
+                        security: meta,
+                        suspicious: KRONOS_AUTH.isSuspicious(payload.email.toLowerCase(), meta)
+                    };
+                    users.push(user);
+                    KRONOS_AUTH.saveUsers(users);
+                    KRONOS_AUTH.logSecurityEvent(user.email, meta);
+                }
+                KRONOS_AUTH.createSession(user, true);
+                showToast('Authenticated successfully! 👋', 'success');
+                setTimeout(() => goTo('start_page.html'), 1000);
+            } catch (e) { showToast('Google Auth failed.', 'error'); }
+        }
+
+        function parseJwt(t) {
+            const b = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+            return JSON.parse(decodeURIComponent(atob(b).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const pw = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-login');
+            if (!email || !pw) return showToast('Fill all fields.', 'error');
+            btn.classList.add('loading');
+            await new Promise(r => setTimeout(r, 1200));
+            const users = KRONOS_AUTH.getUsers();
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === KRONOS_AUTH.encrypt(pw));
+            if (user) {
+                KRONOS_AUTH.createSession(user, document.getElementById('remember-me').checked);
+                showToast('Welcome back.', 'success');
+                setTimeout(() => goTo('start_page.html'), 1000);
+            } else {
+                btn.classList.remove('loading');
+                showToast('Invalid email or password.', 'error');
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const pw = document.getElementById('signup-password').value;
+            const cf = document.getElementById('signup-confirm').value;
+            const btn = document.getElementById('btn-signup');
+            if (!name || !email || !pw) return showToast('All fields required.', 'error');
+            if (pw.length < 8) return showToast('Password too short.', 'error');
+            if (pw !== cf) return showToast('Passwords mismatch.', 'error');
+            btn.classList.add('loading');
+            await new Promise(r => setTimeout(r, 1500));
+            const users = KRONOS_AUTH.getUsers();
+            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                btn.classList.remove('loading');
+                return showToast('Email already in use.', 'error');
+            }
+            const meta = KRONOS_AUTH.getSecurityMeta();
+            const newUser = {
+                username: name,
+                email: email.toLowerCase(),
+                password: KRONOS_AUTH.encrypt(pw),
+                provider: PROVIDERS.MANUAL,
+                registerDate: new Date().toISOString(),
+                security: meta,
+                suspicious: KRONOS_AUTH.isSuspicious(email.toLowerCase(), meta)
+            };
+            users.push(newUser);
+            KRONOS_AUTH.saveUsers(users);
+            KRONOS_AUTH.logSecurityEvent(newUser.email, meta);
+            KRONOS_AUTH.createSession(newUser, false);
+            showToast('Account created!', 'success');
+            setTimeout(() => goTo('start_page.html'), 1000);
+        }
+
+        function switchTab(t) {
+            document.querySelectorAll('.tab-btn, .form-panel').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + t).classList.add('active');
+            document.getElementById('panel-' + t).classList.add('active');
+        }
+
+        function togglePw(id, btn) {
+            const i = document.getElementById(id);
+            i.type = i.type === 'password' ? 'text' : 'password';
+            btn.textContent = i.type === 'password' ? '👁️' : '🙈';
+        }
+
+        function showToast(m, type = '') {
+            const t = document.getElementById('toast');
+            t.textContent = m;
+            t.className = 'toast show ' + type;
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+
+        function goTo(u) {
+            document.body.classList.add('page-exit');
+            setTimeout(() => window.location.href = u, 400);
+        }
+
+        if (KRONOS_AUTH.getSession()) {
+            window.location.replace(params.get('redirect') || 'start_page.html');
+        }
+        if (params.get('tab') === 'signup') switchTab('signup');
+    </script>
+</body>
+
+</html>
